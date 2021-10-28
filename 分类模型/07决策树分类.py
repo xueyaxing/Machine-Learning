@@ -41,7 +41,7 @@ data['target'] = iris.target
 #取消部分样本，选用全样本集
 #整理输入和输出集，拆分测试集 训练集
 x, y = data.iloc[:, :-1], data['target']
-train_x, test_x, train_y, test_y = ms.train_test_split(x, y, test_size=0.1, random_state=7, stratify=y)
+train_x, test_x, train_y, test_y = ms.train_test_split(x, y, test_size=0.3, random_state=7, stratify=y)
 model = lm.LogisticRegression()
 
 #做五次交叉验证
@@ -63,3 +63,18 @@ pred_test_y = model.predict(test_x)
 #模型准确率
 print((pred_test_y==test_y).sum()/test_y.size)
 print(test_y.values)
+
+#混淆矩阵
+m = sm.confusion_matrix(test_y, pred_test_y)
+print(m)
+
+#分类报告
+cr = sm.classification_report(test_y, pred_test_y)
+print(cr)
+
+#决策树分类
+import sklearn.tree as st
+model = st.DecisionTreeClassifier(max_depth=4, min_samples_split=3,)
+model.fit(train_x, train_y)
+pred_test_y = model.predict(test_x)
+print('决策树分类-->',(pred_test_y==test_y).sum()/test_y.size)
